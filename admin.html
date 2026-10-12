@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex"/>
+<title>VB Store Admin</title>
+<link rel="icon" href="assets/img/favicon.png" type="image/png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tw.js"></script>
+<link href="css/site.css" rel="stylesheet"/>
+</head>
+<body class="bg-surface font-sans text-body-md text-on-surface antialiased min-h-screen">
+
+<!-- LOGIN -->
+<section id="login" hidden class="min-h-screen flex items-center justify-center p-4">
+  <form id="login-form" class="w-full max-w-sm bg-surface-container-lowest border border-outline-variant rounded-2xl p-6 space-y-4">
+    <div class="flex items-center gap-2">
+      <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
+      <span class="text-headline-sm uppercase font-semibold">VB.STORE</span>
+      <span class="text-label-sm uppercase text-outline border border-outline-variant rounded px-1.5 py-0.5">Admin</span>
+      <button type="button" data-theme-toggle class="ml-auto p-1 text-on-surface-variant hover:text-on-surface"><span class="msym">light_mode</span></button>
+    </div>
+    <div>
+      <label class="label" for="l-user">Username</label>
+      <input class="field" id="l-user" name="username" autocomplete="username" required/>
+    </div>
+    <div>
+      <label class="label" for="l-pass">Password</label>
+      <input class="field" id="l-pass" name="password" type="password" autocomplete="current-password" required/>
+    </div>
+    <p id="login-error" hidden class="text-body-sm text-error"></p>
+    <button class="btn btn-primary w-full" type="submit"><span class="msym">login</span>Sign in</button>
+    <a href="index.html" class="block text-center text-body-sm text-on-surface-variant hover:text-on-surface">← Back to store</a>
+  </form>
+</section>
+
+<!-- ADMIN APP -->
+<div id="app" hidden>
+  <header class="sticky top-0 z-30 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant">
+    <div class="h-16 max-w-[1280px] mx-auto px-4 lg:px-8 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
+        <span class="hidden md:inline text-headline-sm uppercase font-semibold">VB.STORE</span>
+        <span id="role-chip" class="text-label-sm uppercase text-outline border border-outline-variant rounded px-1.5 py-0.5">Admin</span>
+      </div>
+      <nav class="flex items-center gap-1 bg-surface-container-low border border-outline-variant/60 rounded-lg p-0.5">
+        <button type="button" data-tab="products" class="tab px-3 py-1.5 rounded-md text-label-md">Products</button>
+        <button type="button" data-tab="categories" class="tab px-3 py-1.5 rounded-md text-label-md">Categories</button>
+        <button type="button" data-tab="orders" class="tab px-3 py-1.5 rounded-md text-label-md">Orders<span id="orders-badge" hidden class="ml-1.5 bg-primary text-on-primary rounded-full px-1.5 text-[10px] font-bold"></span></button>
+        <button type="button" data-tab="settings" class="tab admin-only px-3 py-1.5 rounded-md text-label-md">Settings</button>
+      </nav>
+      <div class="flex items-center gap-2">
+        <span id="who" class="hidden lg:inline text-label-md text-on-surface-variant"></span>
+        <button type="button" data-theme-toggle class="p-2 text-on-surface-variant hover:text-on-surface"><span class="msym">light_mode</span></button>
+        <a href="index.html" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">storefront</span><span class="hidden sm:inline">View store</span></a>
+        <button type="button" data-action="logout" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">logout</span><span class="hidden sm:inline">Sign out</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-[1280px] mx-auto px-4 lg:px-8 py-6 space-y-4">
+
+    <div id="readonly-note" hidden class="flex items-center gap-2 bg-surface-container-low border border-outline-variant/60 rounded-xl px-4 py-2 text-body-sm text-on-surface-variant">
+      <span class="msym text-secondary">visibility</span>You have read-only access. You can view products, categories and orders but not change them.
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <section id="tab-products" class="space-y-4">
+      <div id="stats" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-outline-variant/30 border border-outline-variant/40 rounded-xl overflow-hidden"></div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <label class="flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 lg:w-64 focus-within:border-primary">
+          <span class="msym text-outline mr-2">search</span>
+          <input id="p-search" type="search" class="w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search products…"/>
+        </label>
+        <div class="flex gap-2 lg:mr-auto">
+          <select id="p-cat" class="field !w-auto !py-2 !text-[12px]" aria-label="Filter by category"></select>
+          <select id="p-status" class="field !w-auto !py-2 !text-[12px]" aria-label="Filter by status">
+            <option value="">All statuses</option>
+            <option value="in">In stock</option>
+            <option value="low">Low stock (1–5)</option>
+            <option value="out">Sold out</option>
+            <option value="hidden">Hidden</option>
+          </select>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" data-action="export" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">download</span>Export backup</button>
+          <button type="button" data-action="new" class="admin-only btn btn-primary btn-sm"><span class="msym !text-[16px]">add</span>Add product</button>
+        </div>
+      </div>
+
+      <div id="bulk-bar" hidden class="admin-only flex flex-wrap items-center gap-2 bg-surface-container-high border border-primary/40 rounded-xl px-4 py-2">
+        <span id="bulk-count" class="text-label-lg mr-auto"></span>
+        <button type="button" data-action="bulk" data-op="show" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">visibility</span>Show</button>
+        <button type="button" data-action="bulk" data-op="hide" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">visibility_off</span>Hide</button>
+        <button type="button" data-action="bulk" data-op="soldout" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">block</span>Mark sold out</button>
+        <button type="button" data-action="bulk" data-op="delete" class="btn btn-danger btn-sm"><span class="msym !text-[16px]">delete</span>Delete</button>
+        <button type="button" data-action="bulk" data-op="clear" class="btn btn-secondary btn-sm">Clear selection</button>
+      </div>
+
+      <div class="border border-outline-variant/40 rounded-xl overflow-x-auto bg-surface-container-lowest">
+        <table class="w-full text-left text-body-sm min-w-[1040px]">
+          <thead class="text-label-sm uppercase text-outline border-b border-outline-variant/40">
+            <tr>
+              <th class="admin-only p-3 w-8"><input id="select-all" type="checkbox" class="h-4 w-4 accent-primary" aria-label="Select all"/></th>
+              <th class="p-3 font-semibold"><button type="button" data-action="sort" data-key="name" class="inline-flex items-center gap-1 uppercase hover:text-on-surface">Product<span class="msym !text-[14px]"></span></button></th>
+              <th class="p-3 font-semibold"><button type="button" data-action="sort" data-key="category" class="inline-flex items-center gap-1 uppercase hover:text-on-surface">Category<span class="msym !text-[14px]"></span></button></th>
+              <th class="p-3 font-semibold text-right"><button type="button" data-action="sort" data-key="price" class="inline-flex items-center gap-1 uppercase hover:text-on-surface">Price (₹)<span class="msym !text-[14px]"></span></button></th>
+              <th class="p-3 font-semibold text-right">MRP</th>
+              <th class="p-3 font-semibold text-right"><button type="button" data-action="sort" data-key="stock" class="inline-flex items-center gap-1 uppercase hover:text-on-surface">Stock<span class="msym !text-[14px]"></span></button></th>
+              <th class="p-3 font-semibold text-center">Visible</th>
+              <th class="p-3 font-semibold text-center">Featured</th>
+              <th class="admin-only p-3 font-semibold text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="p-rows"></tbody>
+        </table>
+        <p id="p-empty" hidden class="p-8 text-center text-on-surface-variant">No products found.</p>
+      </div>
+    </section>
+
+    <!-- CATEGORIES TAB -->
+    <section id="tab-categories" hidden class="space-y-4 max-w-3xl">
+      <form id="category-form" class="admin-only flex gap-2">
+        <input class="field" name="name" maxlength="40" placeholder="New category name, e.g. Smart Home" aria-label="New category name"/>
+        <button type="submit" class="btn btn-primary btn-sm shrink-0"><span class="msym !text-[16px]">add</span>Add category</button>
+      </form>
+      <div id="c-rows" class="border border-outline-variant/40 rounded-xl bg-surface-container-lowest divide-y divide-outline-variant/20"></div>
+      <p class="text-label-md text-outline">The order here is the order of the filter buttons on the store. A category appears on the store once it has at least one visible product.</p>
+    </section>
+
+    <!-- ORDERS TAB -->
+    <section id="tab-orders" hidden class="space-y-4">
+      <div id="o-stats" class="grid grid-cols-2 md:grid-cols-5 gap-px bg-outline-variant/30 border border-outline-variant/40 rounded-xl overflow-hidden"></div>
+      <div class="flex flex-col md:flex-row md:items-center gap-3">
+        <label class="flex items-center bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 md:w-80 focus-within:border-primary">
+          <span class="msym text-outline mr-2">search</span>
+          <input id="o-search" type="search" class="w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search order ID, name, phone or PIN…"/>
+        </label>
+        <select id="o-status" class="field !w-auto !py-2 !text-[12px]" aria-label="Filter by order status">
+          <option value="">All orders</option>
+          <option value="new">New</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button type="button" data-action="refresh" class="btn btn-secondary btn-sm md:ml-auto"><span class="msym !text-[16px]">refresh</span>Refresh</button>
+      </div>
+      <div id="o-rows" class="space-y-3"></div>
+      <p id="o-empty" hidden class="p-8 text-center text-on-surface-variant border border-outline-variant/40 rounded-xl bg-surface-container-lowest">No orders found.</p>
+    </section>
+
+    <!-- SETTINGS TAB -->
+    <section id="tab-settings" hidden>
+      <form id="settings-form" novalidate class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-5 space-y-3">
+          <h2 class="text-headline-sm font-semibold flex items-center gap-2"><span class="msym text-primary">send</span>Telegram order alerts</h2>
+          <ol class="text-body-sm text-on-surface-variant list-decimal pl-5 space-y-1">
+            <li>In Telegram, open <b class="text-on-surface">@BotFather</b>, send <code>/newbot</code> and copy the bot token it gives you.</li>
+            <li>From <b class="text-on-surface">each phone that should receive orders</b>, open your bot and press <b class="text-on-surface">Start</b>.</li>
+            <li>Paste the token below and press <b class="text-on-surface">Find chat IDs</b>. Tick the people to notify.</li>
+            <li>Send a test, then press <b class="text-on-surface">Save</b>.</li>
+          </ol>
+          <div>
+            <label class="label" for="s-token">Bot token</label>
+            <input class="field" id="s-token" name="botToken" autocomplete="off" spellcheck="false" placeholder="123456789:AA…"/>
+          </div>
+          <div>
+            <label class="label" for="s-chats">Chat IDs to notify <span class="normal-case text-outline">(comma separated)</span></label>
+            <input class="field" id="s-chats" name="chatIds" autocomplete="off" spellcheck="false" placeholder="e.g. 512345678, 698765432"/>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" data-action="find-chats" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">person_search</span>Find chat IDs</button>
+            <button type="button" data-action="test-telegram" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">outgoing_mail</span>Send test message</button>
+            <button type="button" data-action="save-telegram" class="btn btn-primary btn-sm ml-auto">Save</button>
+          </div>
+          <div id="tg-result" class="text-body-sm space-y-1"></div>
+          <p class="text-label-md text-outline border-t border-outline-variant/40 pt-3">The bot token is kept on the server. Customers and read-only users can never see it.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-5 space-y-3">
+            <h2 class="text-headline-sm font-semibold flex items-center gap-2"><span class="msym text-primary">local_shipping</span>Delivery charges</h2>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="label" for="s-fee">Delivery fee (₹)</label>
+                <input class="field" id="s-fee" name="fee" type="number" min="0" step="1"/>
+              </div>
+              <div>
+                <label class="label" for="s-free">Free delivery above (₹)</label>
+                <input class="field" id="s-free" name="freeAbove" type="number" min="0" step="1"/>
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-label-md text-outline">Set the fee to 0 for free delivery on every order.</p>
+              <button type="button" data-action="save-shipping" class="btn btn-primary btn-sm">Save</button>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-lowest border border-outline-variant/50 rounded-xl p-5 space-y-3">
+            <h2 class="text-headline-sm font-semibold flex items-center gap-2"><span class="msym text-primary">group</span>Admin panel users</h2>
+            <div id="u-rows" class="border border-outline-variant/40 rounded-lg divide-y divide-outline-variant/20"></div>
+            <div class="grid grid-cols-2 gap-2">
+              <input class="field" id="u-name" autocomplete="off" maxlength="30" placeholder="New username" aria-label="New username"/>
+              <input class="field" id="u-pass" type="password" autocomplete="new-password" placeholder="Password (8+ characters)" aria-label="New user's password"/>
+              <select class="field" id="u-role" aria-label="New user's access">
+                <option value="viewer">Read-only</option>
+                <option value="admin">Admin (full access)</option>
+              </select>
+              <button type="button" data-action="add-user" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">person_add</span>Add user</button>
+            </div>
+            <p class="text-label-md text-outline">Read-only users can sign in and view products, categories and orders, but cannot change anything or open Settings. Changes here apply immediately.</p>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
+
+<!-- PRODUCT EDITOR -->
+<dialog id="editor" class="bg-transparent p-0 m-auto w-[94%] max-w-2xl text-on-surface focus:outline-none">
+  <form id="product-form" novalidate class="bg-surface-container-lowest border border-outline-variant rounded-2xl">
+    <div class="p-4 border-b border-outline-variant flex items-center justify-between">
+      <h2 id="editor-title" class="text-headline-sm font-semibold uppercase">Add product</h2>
+      <button type="button" data-action="close-editor" aria-label="Close" class="p-1 text-outline hover:text-on-surface"><span class="msym">close</span></button>
+    </div>
+    <div class="p-4 grid grid-cols-2 gap-3 max-h-[70vh] overflow-y-auto">
+      <div class="col-span-2">
+        <label class="label" for="e-name">Product name *</label>
+        <input class="field" id="e-name" name="name" maxlength="80"/>
+      </div>
+      <div>
+        <label class="label" for="e-category">Category *</label>
+        <select class="field" id="e-category" name="category"></select>
+      </div>
+      <div>
+        <label class="label" for="e-series">Sub-heading</label>
+        <input class="field" id="e-series" name="series" maxlength="40" placeholder="e.g. Acoustic Series"/>
+      </div>
+      <div>
+        <label class="label" for="e-price">Selling price (₹) *</label>
+        <input class="field" id="e-price" name="price" type="number" min="1" step="1"/>
+      </div>
+      <div>
+        <label class="label" for="e-mrp">MRP (₹)</label>
+        <input class="field" id="e-mrp" name="mrp" type="number" min="0" step="1" placeholder="Shown struck through"/>
+      </div>
+      <div>
+        <label class="label" for="e-stock">Stock quantity *</label>
+        <input class="field" id="e-stock" name="stock" type="number" min="0" step="1"/>
+      </div>
+      <div>
+        <label class="label" for="e-badge">Badge</label>
+        <input class="field" id="e-badge" name="badge" maxlength="24" placeholder="e.g. New, Bestseller"/>
+      </div>
+      <div class="col-span-2">
+        <label class="label" for="e-spec">Key highlight</label>
+        <input class="field" id="e-spec" name="spec" maxlength="40" placeholder="e.g. 58h battery / 42dB ANC"/>
+      </div>
+      <div class="col-span-2">
+        <label class="label" for="e-desc">Description</label>
+        <textarea class="field" id="e-desc" name="desc" rows="3" maxlength="600"></textarea>
+      </div>
+      <div class="col-span-2">
+        <label class="label" for="e-image">Image</label>
+        <div class="flex gap-3 items-start">
+          <div id="e-preview" class="w-20 h-20 shrink-0 rounded-lg bg-surface-container border border-outline-variant/50 flex items-center justify-center overflow-hidden"></div>
+          <div class="flex-1 space-y-2">
+            <input class="field" id="e-image" name="image" placeholder="Image URL or path, e.g. assets/img/phone.jpg"/>
+            <label class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">add_photo_alternate</span>Upload photo<input id="e-file" type="file" accept="image/*" class="hidden"/></label>
+          </div>
+        </div>
+      </div>
+      <label class="col-span-2 flex items-center gap-2 cursor-pointer select-none">
+        <input type="checkbox" name="featured" class="h-4 w-4 accent-primary"/>
+        <span class="text-body-sm">Feature this product in the large banner at the top of the store</span>
+      </label>
+      <label class="col-span-2 flex items-center gap-2 cursor-pointer select-none">
+        <input type="checkbox" name="hidden" class="h-4 w-4 accent-primary"/>
+        <span class="text-body-sm">Hide this product from the store (keep it as a draft)</span>
+      </label>
+      <p id="editor-error" class="col-span-2 err"></p>
+    </div>
+    <div class="p-4 border-t border-outline-variant flex justify-end gap-2">
+      <button type="button" data-action="close-editor" class="btn btn-secondary btn-sm">Cancel</button>
+      <button type="submit" class="btn btn-primary btn-sm">Save product</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- CONFIRM -->
+<dialog id="confirm" class="bg-transparent p-0 m-auto w-[92%] max-w-sm text-on-surface focus:outline-none">
+  <form method="dialog" class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 space-y-4">
+    <p id="confirm-text" class="text-body-md"></p>
+    <div class="flex justify-end gap-2">
+      <button value="no" class="btn btn-secondary btn-sm">Cancel</button>
+      <button value="yes" id="confirm-yes" class="btn btn-danger btn-sm">Delete</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- TEXT PROMPT (rename category, new category, set password) -->
+<dialog id="prompt" class="bg-transparent p-0 m-auto w-[92%] max-w-sm text-on-surface focus:outline-none">
+  <form method="dialog" class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-5 space-y-3">
+    <label class="label" id="prompt-label" for="prompt-input"></label>
+    <input class="field" id="prompt-input" maxlength="60" autocomplete="off"/>
+    <div class="flex justify-end gap-2">
+      <button type="button" data-action="close-prompt" class="btn btn-secondary btn-sm">Cancel</button>
+      <button value="yes" class="btn btn-primary btn-sm">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-surface-container-high border border-primary/50 px-4 py-2 rounded-xl shadow-2xl text-label-lg flex items-center gap-3">
+  <span id="toast-text"></span>
+  <button type="button" id="toast-action" hidden class="text-primary underline underline-offset-2"></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

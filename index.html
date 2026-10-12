@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VB Store — Premium audio, wearables and everyday tech</title>
+<meta name="description" content="VB Store: premium headphones, wearables and everyday tech. Prices in rupees, delivery across India, Cash on Delivery and UPI."/>
+<link rel="icon" href="assets/img/favicon.png" type="image/png"/>
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tw.js"></script>
+<link href="css/site.css" rel="stylesheet"/>
+</head>
+<body class="bg-surface font-sans text-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant">
+  <div class="h-16 lg:h-20 max-w-[1440px] mx-auto px-4 lg:px-12 flex items-center justify-between gap-4">
+    <a href="#top" class="flex items-center gap-2 shrink-0">
+      <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
+      <span class="text-headline-sm tracking-tight uppercase font-semibold">VB.STORE</span>
+      <span class="h-2 w-2 rounded-full bg-tertiary animate-pulse shadow-[0_0_8px_#4edea3]"></span>
+    </a>
+
+    <label class="hidden md:flex flex-1 max-w-xl items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 focus-within:border-primary focus-within:shadow-[0_0_0_1px_rgb(var(--c-primary))] transition-all">
+      <span class="msym text-outline mr-2">search</span>
+      <input type="search" class="js-search w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search headphones, watches, backpacks…" aria-label="Search products"/>
+    </label>
+
+    <nav id="nav-cats" class="hidden xl:flex items-center gap-1" aria-label="Categories"></nav>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <span class="hidden sm:inline-flex items-center gap-1 border border-outline-variant rounded-lg bg-surface-container-low px-2 py-1.5 text-label-sm text-on-surface-variant">INR ₹</span>
+      <button type="button" data-theme-toggle class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="msym">light_mode</span></button>
+      <button type="button" data-action="wish-filter" aria-label="Wishlist" class="relative p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+        <span class="msym">favorite</span>
+        <span id="wish-count" hidden class="absolute top-0.5 right-0.5 h-4 min-w-4 px-1 rounded-full bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center"></span>
+      </button>
+      <button type="button" data-action="open-cart" aria-label="Open bag" class="flex items-center gap-1.5 bg-surface-container-high border border-outline-variant hover:border-primary px-2.5 py-1.5 rounded-xl transition-all active:scale-[0.98]">
+        <span class="msym text-primary">shopping_bag</span>
+        <span id="cart-count" class="font-mono text-body-sm font-semibold">0</span>
+        <span id="cart-pill-total" class="hidden sm:inline font-mono text-body-sm text-on-primary-container bg-primary-container px-1.5 py-0.5 rounded">₹0</span>
+      </button>
+      <a href="admin.html" title="Admin login" aria-label="Admin login" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+        <span class="msym text-on-primary !text-[18px]">person</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="top" class="w-full min-h-screen">
+
+  <!-- HERO: featured product -->
+  <div class="relative w-full overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[550px] bg-gradient-to-b from-primary/10 via-secondary-container/10 to-transparent blur-3xl pointer-events-none rounded-full"></div>
+    <section id="hero" class="relative max-w-[1440px] mx-auto px-4 lg:px-12 pt-4 pb-10"></section>
+  </div>
+
+  <!-- SERVICE STRIP -->
+  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 py-2 w-full">
+    <div class="bg-surface-container-low border border-outline-variant/50 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center shrink-0"><span class="msym !text-[24px]">local_shipping</span></div>
+        <div>
+          <p class="text-label-lg uppercase tracking-wider">Delivery across India</p>
+          <p id="strip-shipping" class="text-body-sm text-on-surface-variant"></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-tertiary-container/40 text-tertiary flex items-center justify-center shrink-0"><span class="msym !text-[24px]">payments</span></div>
+        <div>
+          <p class="text-label-lg uppercase tracking-wider">Cash on Delivery or UPI</p>
+          <p class="text-body-sm text-on-surface-variant">No card needed. Pay the way you prefer.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-surface-container-highest text-secondary flex items-center justify-center shrink-0"><span class="msym !text-[24px]">receipt_long</span></div>
+        <div>
+          <p class="text-label-lg uppercase tracking-wider">All taxes included</p>
+          <p class="text-body-sm text-on-surface-variant">The price you see is the price you pay.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section id="catalogue" class="max-w-[1440px] mx-auto px-4 lg:px-12 pt-6 pb-2 w-full scroll-mt-24">
+    <label class="md:hidden flex items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 mb-3 focus-within:border-primary">
+      <span class="msym text-outline mr-2">search</span>
+      <input type="search" class="js-search w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search products…" aria-label="Search products"/>
+    </label>
+    <div class="border-y border-outline-variant/50 py-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div id="cat-pills" class="no-scrollbar flex items-center gap-1 overflow-x-auto"></div>
+      <div class="flex items-center justify-between lg:justify-end gap-4">
+        <label class="flex items-center gap-2 cursor-pointer select-none">
+          <input id="instock-toggle" type="checkbox" class="h-4 w-4 accent-primary cursor-pointer"/>
+          <span class="text-label-sm uppercase">In-stock only</span>
+        </label>
+        <select id="sort" class="field !w-auto !py-1.5 !text-[12px]" aria-label="Sort products">
+          <option value="featured">Sort: Featured</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+          <option value="discount">Biggest discount</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 py-4 w-full">
+    <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-outline-variant/30 rounded-2xl overflow-hidden border border-outline-variant/40"></div>
+    <div id="grid-empty" hidden class="rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-12 text-center">
+      <span class="msym !text-[40px] text-outline">search_off</span>
+      <p class="text-headline-sm mt-2">No products match</p>
+      <p class="text-body-sm text-on-surface-variant mt-1">Try a different search or category.</p>
+      <button type="button" data-action="reset-filters" class="btn btn-secondary btn-sm mt-4">Clear filters</button>
+    </div>
+  </section>
+
+  <!-- HOW ORDERING WORKS -->
+  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 py-10 w-full">
+    <div class="pb-4 border-b border-outline-variant/40">
+      <span class="text-label-sm text-primary uppercase tracking-widest">Simple and personal</span>
+      <h2 class="text-headline-md md:text-headline-lg uppercase font-bold">How ordering works</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+      <div class="p-6 bg-surface-container-lowest border border-outline-variant/50 rounded-2xl">
+        <span class="font-mono text-label-md text-outline">01</span>
+        <h3 class="text-headline-sm font-semibold mt-2">Add to your bag</h3>
+        <p class="text-body-sm text-on-surface-variant mt-1">Pick what you like. Your bag stays saved on this device.</p>
+      </div>
+      <div class="p-6 bg-surface-container-lowest border border-outline-variant/50 rounded-2xl">
+        <span class="font-mono text-label-md text-outline">02</span>
+        <h3 class="text-headline-sm font-semibold mt-2">Tell us where to deliver</h3>
+        <p class="text-body-sm text-on-surface-variant mt-1">Enter your name, mobile number and address with PIN code. No account and no online payment.</p>
+      </div>
+      <div class="p-6 bg-surface-container-lowest border border-outline-variant/50 rounded-2xl">
+        <span class="font-mono text-label-md text-outline">03</span>
+        <h3 class="text-headline-sm font-semibold mt-2">We call to confirm</h3>
+        <p class="text-body-sm text-on-surface-variant mt-1">Your order reaches our team instantly. We confirm on your mobile and arrange delivery and payment.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant">
+  <div class="max-w-[1440px] mx-auto px-4 lg:px-12 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-on-surface-variant">
+    <div class="flex items-center gap-2">
+      <img src="assets/img/logo.png" alt="" class="h-7 w-auto"/>
+      <span class="text-label-lg uppercase text-on-surface">VB.STORE</span>
+      <span class="text-body-sm">· Made for India</span>
+    </div>
+    <p class="text-body-sm">© <span id="year"></span> VB Store. Prices in Indian Rupees, inclusive of all taxes.</p>
+    <a href="admin.html" class="text-body-sm hover:text-on-surface transition-colors">Admin</a>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div id="drawer-scrim" data-action="close-cart" hidden class="fixed inset-0 z-40 bg-black/60"></div>
+<aside id="drawer" aria-label="Shopping bag" class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-surface-container-lowest/95 backdrop-blur-2xl border-l border-outline-variant z-50 flex flex-col translate-x-full transition-transform duration-300 ease-in-out shadow-2xl">
+
+  <!-- View 1: bag -->
+  <div id="view-bag" class="flex flex-col h-full min-h-0">
+    <div class="p-4 border-b border-outline-variant flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="msym text-primary">shopping_bag</span>
+        <h2 class="text-headline-sm font-semibold uppercase">Your Bag</h2>
+        <span id="bag-count" class="bg-primary-container text-on-primary-container font-mono text-body-sm px-2 py-0.5 rounded-full font-bold">0</span>
+      </div>
+      <button type="button" data-action="close-cart" aria-label="Close bag" class="p-2 text-outline hover:text-on-surface"><span class="msym">close</span></button>
+    </div>
+    <div id="ship-progress" class="px-4 py-2 bg-surface-container-low border-b border-outline-variant/60"></div>
+    <div id="bag-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    <div class="p-4 border-t border-outline-variant space-y-3">
+      <div class="js-totals space-y-1"></div>
+      <button type="button" id="to-checkout" data-action="checkout" class="btn btn-primary w-full"><span class="msym">arrow_forward</span>Enter delivery details</button>
+      <p class="text-center text-label-sm text-outline">Cash on Delivery · UPI · All taxes included</p>
+    </div>
+  </div>
+
+  <!-- View 2: delivery details -->
+  <div id="view-checkout" hidden class="flex flex-col h-full min-h-0">
+    <div class="p-4 border-b border-outline-variant flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <button type="button" data-action="back-to-bag" aria-label="Back to bag" class="p-1 text-outline hover:text-on-surface"><span class="msym">arrow_back</span></button>
+        <h2 class="text-headline-sm font-semibold uppercase">Delivery details</h2>
+      </div>
+      <button type="button" data-action="close-cart" aria-label="Close" class="p-2 text-outline hover:text-on-surface"><span class="msym">close</span></button>
+    </div>
+    <form id="checkout-form" novalidate class="flex-1 min-h-0 flex flex-col">
+      <div class="flex-1 overflow-y-auto p-4 space-y-3">
+        <div>
+          <label class="label" for="f-name">Full name</label>
+          <input class="field" id="f-name" name="name" autocomplete="name" maxlength="80"/>
+          <span class="err" data-err="name"></span>
+        </div>
+        <div>
+          <label class="label" for="f-phone">Mobile number</label>
+          <div class="flex gap-2">
+            <span class="field !w-auto shrink-0 text-on-surface-variant">+91</span>
+            <input class="field" id="f-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="10-digit mobile number"/>
+          </div>
+          <span class="err" data-err="phone"></span>
+        </div>
+        <div>
+          <label class="label" for="f-email">Email <span class="normal-case text-outline">(optional)</span></label>
+          <input class="field" id="f-email" name="email" type="email" autocomplete="email" maxlength="120"/>
+          <span class="err" data-err="email"></span>
+        </div>
+        <div>
+          <label class="label" for="f-line1">Flat / house no., building, street</label>
+          <input class="field" id="f-line1" name="line1" autocomplete="address-line1" maxlength="160"/>
+          <span class="err" data-err="line1"></span>
+        </div>
+        <div>
+          <label class="label" for="f-line2">Area / landmark <span class="normal-case text-outline">(optional)</span></label>
+          <input class="field" id="f-line2" name="line2" autocomplete="address-line2" maxlength="160"/>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="label" for="f-city">City / town</label>
+            <input class="field" id="f-city" name="city" autocomplete="address-level2" maxlength="60"/>
+            <span class="err" data-err="city"></span>
+          </div>
+          <div>
+            <label class="label" for="f-pin">PIN code</label>
+            <input class="field" id="f-pin" name="pin" inputmode="numeric" autocomplete="postal-code" maxlength="6" placeholder="6 digits"/>
+            <span class="err" data-err="pin"></span>
+          </div>
+        </div>
+        <div>
+          <label class="label" for="f-state">State / UT</label>
+          <select class="field" id="f-state" name="state" autocomplete="address-level1"></select>
+          <span class="err" data-err="state"></span>
+        </div>
+        <div>
+          <span class="label">Payment preference</span>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="flex items-center gap-2 p-3 rounded-lg border border-outline-variant bg-surface-container-low cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-surface-container-high">
+              <input type="radio" name="payment" value="Cash on Delivery" checked class="accent-primary"/>
+              <span class="text-body-sm font-medium">Cash on Delivery</span>
+            </label>
+            <label class="flex items-center gap-2 p-3 rounded-lg border border-outline-variant bg-surface-container-low cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-surface-container-high">
+              <input type="radio" name="payment" value="UPI" class="accent-primary"/>
+              <span class="text-body-sm font-medium">UPI</span>
+            </label>
+          </div>
+          <p class="text-label-md text-outline mt-1.5">For UPI we share the payment details when we confirm your order.</p>
+        </div>
+        <div>
+          <label class="label" for="f-notes">Order notes <span class="normal-case text-outline">(optional)</span></label>
+          <textarea class="field" id="f-notes" name="notes" rows="2" maxlength="400" placeholder="Size, colour, preferred delivery time…"></textarea>
+        </div>
+        <!-- Honeypot: real customers never see or fill this. -->
+        <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="absolute -left-[9999px] h-0 w-0 opacity-0"/>
+      </div>
+      <div class="p-4 border-t border-outline-variant space-y-3">
+        <div class="js-totals space-y-1"></div>
+        <p id="order-error" hidden class="text-body-sm text-error bg-error-container/30 border border-error/40 rounded-lg p-2.5"></p>
+        <button type="submit" id="place-order" class="btn btn-primary w-full"><span class="msym">check_circle</span><span>Place order</span></button>
+        <p class="text-center text-label-sm text-outline">No payment now. We confirm on your mobile first.</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- View 3: confirmation -->
+  <div id="view-success" hidden class="flex flex-col h-full items-center justify-center text-center p-8 gap-3">
+    <div class="h-16 w-16 rounded-full bg-tertiary/10 border border-tertiary/40 flex items-center justify-center shadow-[0_0_24px_rgba(78,222,163,.25)]">
+      <span class="msym !text-[32px] text-tertiary">check</span>
+    </div>
+    <h2 class="text-headline-md font-semibold">Order placed. Thank you!</h2>
+    <p class="text-body-sm text-on-surface-variant">Order ID</p>
+    <p id="success-id" class="font-mono text-headline-sm text-primary"></p>
+    <p id="success-text" class="text-body-md text-on-surface-variant max-w-xs"></p>
+    <button type="button" data-action="close-cart" class="btn btn-secondary mt-3">Continue shopping</button>
+  </div>
+</aside>
+
+<!-- QUICK VIEW -->
+<dialog id="quick-view" class="bg-transparent p-0 m-auto w-[92%] max-w-3xl text-on-surface focus:outline-none"></dialog>
+
+<!-- TOAST -->
+<div id="toast" role="status" class="fixed top-24 right-4 sm:right-6 z-[60] -translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-surface-container-high/95 backdrop-blur-xl border border-primary/50 px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2">
+  <span class="msym text-tertiary">check_circle</span>
+  <div class="flex flex-col">
+    <span id="toast-title" class="text-label-md font-bold"></span>
+    <span id="toast-sub" class="text-body-sm text-on-surface-variant"></span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

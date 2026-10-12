@@ -1,0 +1,100 @@
+/* Theme colours as "R G B" so Tailwind can apply opacity (see js/tw.js). */
+:root {
+  --c-surface: 19 19 21;
+  --c-surface-container-lowest: 14 14 16;
+  --c-surface-container-low: 28 27 29;
+  --c-surface-container: 32 31 34;
+  --c-surface-container-high: 42 42 44;
+  --c-surface-container-highest: 53 52 55;
+  --c-on-surface: 229 225 228;
+  --c-on-surface-variant: 199 196 215;
+  --c-outline: 144 143 160;
+  --c-outline-variant: 70 69 84;
+  --c-primary: 192 193 255;
+  --c-primary-fixed: 225 224 255;
+  --c-on-primary: 16 0 169;
+  --c-primary-container: 128 131 255;
+  --c-on-primary-container: 13 0 150;
+  --c-secondary: 189 194 255;
+  --c-secondary-container: 47 58 163;
+  --c-tertiary: 78 222 163;
+  --c-on-tertiary: 0 56 36;
+  --c-tertiary-container: 0 136 93;
+  --c-error: 255 180 171;
+  --c-error-container: 147 0 10;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --c-surface: 251 248 255;
+  --c-surface-container-lowest: 255 255 255;
+  --c-surface-container-low: 245 242 250;
+  --c-surface-container: 239 236 245;
+  --c-surface-container-high: 233 230 240;
+  --c-surface-container-highest: 227 225 234;
+  --c-on-surface: 27 27 33;
+  --c-on-surface-variant: 70 69 84;
+  --c-outline: 118 117 134;
+  --c-outline-variant: 199 197 215;
+  --c-primary: 73 75 214;
+  --c-primary-fixed: 55 52 184;
+  --c-on-primary: 255 255 255;
+  --c-primary-container: 225 224 255;
+  --c-on-primary-container: 47 46 190;
+  --c-secondary: 75 85 185;
+  --c-secondary-container: 223 224 255;
+  --c-tertiary: 0 108 73;
+  --c-on-tertiary: 255 255 255;
+  --c-tertiary-container: 111 251 190;
+  --c-error: 186 26 26;
+  --c-error-container: 255 218 214;
+  color-scheme: light;
+}
+
+html { scroll-behavior: smooth; }
+body { overscroll-behavior: none; }
+[hidden] { display: none !important; }
+/* Read-only users never see editing controls. */
+body[data-role="viewer"] .admin-only { display: none !important; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgb(var(--c-surface-container-highest)); border-radius: 9999px; }
+::-webkit-scrollbar-track { background: transparent; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.msym { font-family: "Material Symbols Outlined"; font-size: 20px; line-height: 1; user-select: none; }
+.msym.fill { font-variation-settings: "FILL" 1; }
+.font-mono { font-variant-numeric: tabular-nums; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  border-radius: .5rem; border: 1px solid transparent; padding: .75rem 1.25rem;
+  font-size: 14px; line-height: 18px; font-weight: 600; letter-spacing: .01em;
+  transition: all 150ms cubic-bezier(.16, 1, .3, 1); cursor: pointer;
+}
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.btn-primary { background: rgb(var(--c-primary)); color: rgb(var(--c-on-primary)); box-shadow: 0 0 24px rgb(var(--c-primary) / .2); }
+.btn-primary:hover:not(:disabled) { background: rgb(var(--c-primary-fixed)); }
+.btn-secondary { background: rgb(var(--c-surface-container-high)); color: rgb(var(--c-on-surface)); border-color: rgb(var(--c-outline-variant)); }
+.btn-secondary:hover:not(:disabled) { border-color: rgb(var(--c-primary)); box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, .12); }
+.btn-danger { background: transparent; color: rgb(var(--c-error)); border-color: rgb(var(--c-error) / .4); }
+.btn-danger:hover { background: rgb(var(--c-error-container) / .35); }
+.btn-sm { padding: .45rem .75rem; font-size: 12px; }
+
+.field {
+  width: 100%; background: rgb(var(--c-surface-container-lowest)); color: rgb(var(--c-on-surface));
+  border: 1px solid rgb(var(--c-outline-variant)); border-radius: .5rem; padding: .625rem .75rem;
+  font-size: 14px; line-height: 20px;
+}
+.field::placeholder { color: rgb(var(--c-outline)); }
+.field:focus { outline: none; border-color: rgb(var(--c-primary)); box-shadow: 0 0 0 1px rgb(var(--c-primary)); }
+.field.invalid { border-color: rgb(var(--c-error)); box-shadow: 0 0 0 1px rgb(var(--c-error)); }
+select.field {
+  appearance: none; padding-right: 2rem; background-repeat: no-repeat; background-size: 5px 5px;
+  background-image: linear-gradient(45deg, transparent 50%, rgb(var(--c-outline)) 50%), linear-gradient(135deg, rgb(var(--c-outline)) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+}
+.label { display: block; font-size: 11px; line-height: 14px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: rgb(var(--c-on-surface-variant)); margin-bottom: .35rem; }
+.err { display: block; font-size: 12px; color: rgb(var(--c-error)); margin-top: .25rem; }
+
+dialog::backdrop { background: rgb(var(--c-surface-container-lowest) / .8); backdrop-filter: blur(12px); }
