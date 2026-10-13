@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Deals — VB Store</title>
+<meta name="description" content="Hand-picked deals and price drops from Amazon, Flipkart and other shopping sites, collected by VB Store."/>
+<link rel="icon" href="assets/img/favicon.png" type="image/png"/>
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tw.js"></script>
+<link href="css/site.css" rel="stylesheet"/>
+</head>
+<body class="bg-surface font-sans text-body-md text-on-surface antialiased selection:bg-primary-container selection:text-on-primary-container">
+
+<header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant">
+  <div class="h-16 lg:h-20 max-w-[1440px] mx-auto px-4 lg:px-12 flex items-center justify-between gap-4">
+    <a href="index.html" class="flex items-center gap-2 shrink-0">
+      <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
+      <span class="text-headline-sm tracking-tight uppercase font-semibold">VB.STORE</span>
+      <span class="text-label-sm uppercase text-tertiary border border-tertiary/40 bg-tertiary/10 rounded px-1.5 py-0.5">Deals</span>
+    </a>
+
+    <label class="hidden md:flex flex-1 max-w-xl items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 focus-within:border-primary focus-within:shadow-[0_0_0_1px_rgb(var(--c-primary))] transition-all">
+      <span class="msym text-outline mr-2">search</span>
+      <input type="search" class="js-search w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search deals…" aria-label="Search deals"/>
+    </label>
+
+    <div class="flex items-center gap-2 shrink-0">
+      <button type="button" data-theme-toggle class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="msym">light_mode</span></button>
+      <a href="index.html" class="btn btn-secondary btn-sm"><span class="msym !text-[16px]">storefront</span><span class="hidden sm:inline">Shop VB Store</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="w-full min-h-screen">
+  <div class="relative w-full overflow-hidden">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[1000px] h-[420px] bg-gradient-to-b from-primary/10 via-secondary-container/10 to-transparent blur-3xl pointer-events-none rounded-full"></div>
+    <section class="relative max-w-[1440px] mx-auto px-4 lg:px-12 pt-8 pb-6">
+      <span class="text-label-sm text-tertiary uppercase tracking-widest">Price drops we spotted</span>
+      <h1 class="text-[32px] leading-9 md:text-headline-xl uppercase font-bold tracking-tight mt-1">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Deals from across the web</span>
+      </h1>
+      <p class="text-body-lg text-on-surface-variant max-w-2xl mt-3">Hand-picked offers from Amazon, Flipkart and other shopping sites. Choose a deal and we take you to the original site to buy it.</p>
+    </section>
+  </div>
+
+  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 pb-2 w-full">
+    <label class="md:hidden flex items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 mb-3 focus-within:border-primary">
+      <span class="msym text-outline mr-2">search</span>
+      <input type="search" class="js-search w-full bg-transparent text-body-sm placeholder:text-outline focus:outline-none" placeholder="Search deals…" aria-label="Search deals"/>
+    </label>
+    <div class="border-y border-outline-variant/50 py-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div id="site-pills" class="no-scrollbar flex items-center gap-1 overflow-x-auto"></div>
+      <select id="sort" class="field !w-auto !py-1.5 !text-[12px]" aria-label="Sort deals">
+        <option value="featured">Sort: Our picks</option>
+        <option value="drop">Biggest price drop</option>
+        <option value="percent">Biggest % off</option>
+        <option value="low">Price: Low to High</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 py-4 w-full">
+    <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-outline-variant/30 rounded-2xl overflow-hidden border border-outline-variant/40"></div>
+    <div id="state" class="rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-12 text-center"></div>
+  </section>
+</main>
+
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant mt-8">
+  <div class="max-w-[1440px] mx-auto px-4 lg:px-12 py-8 space-y-3 text-on-surface-variant">
+    <p class="text-body-sm max-w-3xl">These products are sold by other websites, not by VB Store. Prices and stock can change at any time, so the price shown on the seller's site is the one that applies. Your order, payment, delivery and returns are handled by that site.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-outline-variant/40">
+      <div class="flex items-center gap-2">
+        <img src="assets/img/logo.png" alt="" class="h-7 w-auto"/>
+        <span class="text-label-lg uppercase text-on-surface">VB.STORE</span>
+      </div>
+      <a href="index.html" class="text-body-sm hover:text-on-surface transition-colors">Back to the store</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/store.js"></script>
+<script src="js/deals.js"></script>
+</body>
+</html>

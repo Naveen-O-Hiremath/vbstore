@@ -22,6 +22,7 @@
   --c-tertiary-container: 0 136 93;
   --c-error: 255 180 171;
   --c-error-container: 147 0 10;
+  --c-chart: 128 131 255; /* chart marks: mid-tone so they read on the dark surface */
   color-scheme: dark;
 }
 :root[data-theme="light"] {
@@ -47,6 +48,7 @@
   --c-tertiary-container: 111 251 190;
   --c-error: 186 26 26;
   --c-error-container: 255 218 214;
+  --c-chart: 73 75 214;
   color-scheme: light;
 }
 

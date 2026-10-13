@@ -430,10 +430,101 @@ begin
 end;
 $$;
 
--- Only place_order is open to customers; the rest need a signed-in user and
--- check for admin rights themselves.
+-- ---------------------------------------------------------------- deals from other shopping sites
+
+-- Products listed on Amazon, Flipkart and other sites. Customers are sent to
+-- the original site; every click is counted for the admin dashboard.
+create table if not exists public.deals (
+  id          bigint generated always as identity primary key,
+  title       text not null check (length(btrim(title)) between 1 and 140),
+  source      text not null check (length(btrim(source)) between 1 and 30),
+  -- http(s) only, so a link can never run script on the page
+  url         text not null check (url ~* '^https?://[^[:space:]]+$' and length(url) <= 2000),
+  image       text not null default '',
+  price       integer not null check (price > 0),
+  old_price   integer not null, -- the price drop shown is old_price - price
+  description text not null default '',
+  hidden      boolean not null default false,
+  position    integer not null default 0,
+  created_at  timestamptz not null default now(),
+  check (old_price >= price)
+);
+
+create table if not exists public.deal_clicks (
+  id         bigint generated always as identity primary key,
+  deal_id    bigint not null references public.deals (id) on delete cascade,
+  clicked_at timestamptz not null default now()
+);
+create index if not exists deal_clicks_clicked_at on public.deal_clicks (clicked_at);
+create index if not exists deal_clicks_deal_id on public.deal_clicks (deal_id);
+
+alter table public.deals       enable row level security;
+alter table public.deal_clicks enable row level security;
+
+grant select on public.deals to anon, authenticated;
+grant insert, update, delete on public.deals to authenticated;
+grant select on public.deal_clicks to authenticated;
+
+drop policy if exists "read deals" on public.deals;
+create policy "read deals" on public.deals for select to anon, authenticated
+  using (not hidden or public.is_staff());
+drop policy if exists "admins manage deals" on public.deals;
+create policy "admins manage deals" on public.deals for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+
+-- Clicks are written only by track_deal_click() below.
+drop policy if exists "staff read deal clicks" on public.deal_clicks;
+create policy "staff read deal clicks" on public.deal_clicks for select to authenticated using (public.is_staff());
+
+-- Called by the deals page when a customer follows a link.
+create or replace function public.track_deal_click(p_deal_id bigint) returns void
+language sql security definer set search_path = '' as $$
+  insert into public.deal_clicks (deal_id)
+  select id from public.deals where id = p_deal_id and not hidden;
+$$;
+
+-- Click numbers for the admin dashboard, with days counted in Indian time.
+--   days:     one row per day for the last p_days days, oldest first
+--   previous: clicks in the p_days days before that, for comparison
+--   deals:    per deal, clicks in the period, all-time clicks and the last click
+create or replace function public.deal_stats(p_days integer default 30) returns jsonb
+language plpgsql stable security definer set search_path = '' as $$
+declare
+  v_days  integer := least(greatest(coalesce(p_days, 30), 1), 365);
+  v_today timestamp := date_trunc('day', now() at time zone 'Asia/Kolkata');
+  v_start timestamp := v_today - (v_days - 1) * interval '1 day';
+begin
+  if not public.is_staff() then
+    raise exception 'Please sign in first.' using errcode = '42501';
+  end if;
+  return (
+    with clicks as (
+      select deal_id, clicked_at, clicked_at at time zone 'Asia/Kolkata' as local_time from public.deal_clicks
+    )
+    select jsonb_build_object(
+      'days', (
+        select jsonb_agg(jsonb_build_object(
+          'day', to_char(d, 'YYYY-MM-DD'),
+          'clicks', (select count(*) from clicks where local_time >= d and local_time < d + interval '1 day')
+        ) order by d)
+        from generate_series(v_start, v_today, interval '1 day') as d),
+      'previous', (select count(*) from clicks where local_time >= v_start - v_days * interval '1 day' and local_time < v_start),
+      'allTime', (select count(*) from clicks),
+      'deals', (
+        select coalesce(jsonb_agg(jsonb_build_object('id', deal_id, 'clicks', in_period, 'allTime', total, 'last', last_click)), '[]'::jsonb)
+        from (
+          select deal_id, count(*) filter (where local_time >= v_start) as in_period, count(*) as total, max(clicked_at) as last_click
+          from clicks group by deal_id
+        ) as per_deal)
+    )
+  );
+end;
+$$;
+
+-- Only place_order and track_deal_click are open to customers; the rest need a
+-- signed-in user and check for the right access themselves.
 revoke execute on all functions in schema public from public, anon;
-grant execute on function public.place_order(jsonb, jsonb), public.is_staff(), public.is_admin() to anon, authenticated;
+grant execute on function public.place_order(jsonb, jsonb), public.track_deal_click(bigint), public.is_staff(), public.is_admin() to anon, authenticated;
 grant execute on all functions in schema public to authenticated;
 revoke all on schema private from public, anon, authenticated;
 

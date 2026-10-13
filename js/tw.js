@@ -16,7 +16,7 @@ tailwind.config = {
         "surface-container-high", "surface-container-highest", "on-surface", "on-surface-variant",
         "outline", "outline-variant", "primary", "primary-fixed", "on-primary", "primary-container",
         "on-primary-container", "secondary", "secondary-container", "tertiary", "on-tertiary",
-        "tertiary-container", "error", "error-container"
+        "tertiary-container", "error", "error-container", "chart"
       ].map((name) => [name, themed(name)])),
       fontFamily: {
         sans: ["Geist", "system-ui", "sans-serif"],

@@ -7,7 +7,7 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const db = VB.connect({ staff: true });
   // Everything not listed here changes data and is skipped for read-only users.
-  const VIEWER_ACTIONS = new Set(["logout", "sort", "export", "refresh"]);
+  const VIEWER_ACTIONS = new Set(["logout", "sort", "export", "refresh", "stats-range"]);
   const ORDER_STATUSES = ["new", "confirmed", "shipped", "delivered", "cancelled"];
 
   let me = null; // the signed-in user's profile: { user_id, username, role }
@@ -85,7 +85,8 @@
     const [catalogue, orderRows, staffRows] = await Promise.all([
       VB.fetchCatalogue(db),
       unwrap(db.from("orders").select("*").order("created_at", { ascending: false }).limit(500)),
-      isAdmin() ? unwrap(db.from("profiles").select("*").order("created_at")) : []
+      isAdmin() ? unwrap(db.from("profiles").select("*").order("created_at")) : [],
+      ...modules.map((module) => module.load())
     ]);
     if (!me) return; // signed out while the request was in flight
     ({ products, categories, shipping } = catalogue);
@@ -176,7 +177,7 @@
 
   function showTab(name) {
     if (name === "settings" && !isAdmin()) name = "products";
-    for (const tab of ["products", "categories", "orders", "settings"]) $(`#tab-${tab}`).hidden = tab !== name;
+    for (const tab of ["products", "categories", "orders", "deals", "dashboard", "settings"]) $(`#tab-${tab}`).hidden = tab !== name;
     $$(".tab").forEach((button) => {
       const active = button.dataset.tab === name;
       button.classList.toggle("bg-surface-container-highest", active);
@@ -190,6 +191,7 @@
     renderCategories();
     renderOrders();
     renderUsers();
+    modules.forEach((module) => module.render());
   }
 
   // ---------- Products ----------
@@ -824,6 +826,10 @@
   bind("#p-status", "change", (v) => { filterStatus = v; }, renderProducts);
   bind("#o-search", "input", (v) => { orderQuery = v; }, renderOrders);
   bind("#o-status", "change", (v) => { orderStatus = v; }, renderOrders);
+
+  // Extra admin sections (js/admin-deals.js) register in VB.adminModules. Each gets
+  // this file's helpers and returns { load, render }, run with every refresh.
+  const modules = (VB.adminModules || []).map((setup) => setup({ db, act, toast, confirmDialog, isAdmin, friendly, uploadPhoto, actions }));
 
   startSession();
 })();
