@@ -20,11 +20,14 @@
 <!-- HEADER -->
 <header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-2xl border-b border-outline-variant">
   <div class="h-16 lg:h-20 max-w-[1440px] mx-auto px-4 lg:px-12 flex items-center justify-between gap-4">
-    <a href="#top" class="flex items-center gap-2 shrink-0">
-      <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
-      <span class="text-headline-sm tracking-tight uppercase font-semibold">VB.STORE</span>
-      <span class="h-2 w-2 rounded-full bg-tertiary animate-pulse shadow-[0_0_8px_#4edea3]"></span>
-    </a>
+    <div class="flex items-center gap-1 shrink-0">
+      <button type="button" data-action="open-menu" aria-label="Open menu" aria-controls="menu" class="xl:hidden p-2 -ml-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="msym !text-[24px]">menu</span></button>
+      <a href="#top" class="flex items-center gap-2">
+        <img src="assets/img/logo.png" alt="VB Store logo" class="h-9 w-auto"/>
+        <span class="text-headline-sm tracking-tight uppercase font-semibold">VB.STORE</span>
+        <span class="hidden sm:block h-2 w-2 rounded-full bg-tertiary animate-pulse shadow-[0_0_8px_#4edea3]"></span>
+      </a>
+    </div>
 
     <label class="hidden md:flex flex-1 max-w-xl items-center bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-2 focus-within:border-primary focus-within:shadow-[0_0_0_1px_rgb(var(--c-primary))] transition-all">
       <span class="msym text-outline mr-2">search</span>
@@ -32,12 +35,12 @@
     </label>
 
     <nav id="nav-cats" class="hidden xl:flex items-center gap-1" aria-label="Categories"></nav>
-    <a href="deals.html" class="hidden sm:inline-flex items-center gap-1 shrink-0 text-label-md text-tertiary border border-tertiary/40 bg-tertiary/10 hover:bg-tertiary/20 rounded-lg px-2.5 py-1.5 transition-colors"><span class="msym !text-[16px]">local_offer</span>Deals</a>
+    <a href="deals.html" aria-label="Deals from other sites" class="inline-flex items-center gap-1 shrink-0 ml-auto md:ml-0 text-label-md text-tertiary border border-tertiary/40 bg-tertiary/10 hover:bg-tertiary/20 rounded-lg px-2.5 py-1.5 transition-colors"><span class="msym !text-[16px]">local_offer</span>Deals</a>
 
     <div class="flex items-center gap-2 shrink-0">
       <span class="hidden sm:inline-flex items-center gap-1 border border-outline-variant rounded-lg bg-surface-container-low px-2 py-1.5 text-label-sm text-on-surface-variant">INR ₹</span>
-      <button type="button" data-theme-toggle class="p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="msym">light_mode</span></button>
-      <button type="button" data-action="wish-filter" aria-label="Wishlist" class="relative p-2 text-on-surface-variant hover:text-on-surface transition-colors">
+      <button type="button" data-theme-toggle class="hidden sm:block p-2 text-on-surface-variant hover:text-on-surface transition-colors"><span class="msym">light_mode</span></button>
+      <button type="button" data-action="wish-filter" aria-label="Wishlist" class="hidden sm:block relative p-2 text-on-surface-variant hover:text-on-surface transition-colors">
         <span class="msym">favorite</span>
         <span id="wish-count" hidden class="absolute top-0.5 right-0.5 h-4 min-w-4 px-1 rounded-full bg-primary text-on-primary text-[10px] font-bold flex items-center justify-center"></span>
       </button>
@@ -46,7 +49,7 @@
         <span id="cart-count" class="font-mono text-body-sm font-semibold">0</span>
         <span id="cart-pill-total" class="hidden sm:inline font-mono text-body-sm text-on-primary-container bg-primary-container px-1.5 py-0.5 rounded">₹0</span>
       </button>
-      <a href="admin.html" title="Admin login" aria-label="Admin login" class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+      <a href="admin.html" title="Admin login" aria-label="Admin login" class="hidden sm:flex w-8 h-8 rounded-full bg-primary items-center justify-center shrink-0">
         <span class="msym text-on-primary !text-[18px]">person</span>
       </a>
     </div>
@@ -122,8 +125,23 @@
     </div>
   </section>
 
+  <!-- DEALS FROM OTHER SITES (shown only when there are deals) -->
+  <section id="home-deals" hidden class="max-w-[1440px] mx-auto px-4 lg:px-12 pt-8 pb-2 w-full scroll-mt-24">
+    <div class="flex items-end justify-between gap-4 pb-4 border-b border-outline-variant/40">
+      <div>
+        <span class="text-label-sm text-tertiary uppercase tracking-widest">Price drops we spotted</span>
+        <h2 class="text-headline-md md:text-headline-lg uppercase font-bold">Deals from across the web</h2>
+        <p class="text-body-sm text-on-surface-variant mt-1">Offers from Amazon, Flipkart and more. Choose one and we take you to the original site to buy it.</p>
+      </div>
+      <a href="deals.html" class="btn btn-secondary btn-sm shrink-0">View all<span class="msym !text-[16px]">arrow_forward</span></a>
+    </div>
+    <!-- Swipes sideways on phones, becomes a grid on larger screens. -->
+    <div id="home-deals-grid" class="no-scrollbar mt-6 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-outline-variant/30 rounded-2xl overflow-x-auto sm:overflow-hidden border border-outline-variant/40 snap-x snap-mandatory"></div>
+    <a id="home-deals-more" href="deals.html" hidden class="block text-center text-label-md text-primary hover:underline mt-4"></a>
+  </section>
+
   <!-- HOW ORDERING WORKS -->
-  <section class="max-w-[1440px] mx-auto px-4 lg:px-12 py-10 w-full">
+  <section id="how" class="scroll-mt-24 max-w-[1440px] mx-auto px-4 lg:px-12 py-10 w-full">
     <div class="pb-4 border-b border-outline-variant/40">
       <span class="text-label-sm text-primary uppercase tracking-widest">Simple and personal</span>
       <h2 class="text-headline-md md:text-headline-lg uppercase font-bold">How ordering works</h2>
@@ -163,6 +181,32 @@
     </div>
   </div>
 </footer>
+
+<!-- SIDE MENU (phones and tablets; wide screens show the same links in the header) -->
+<div id="menu-scrim" data-action="close-menu" hidden class="fixed inset-0 z-40 bg-black/60 xl:hidden"></div>
+<aside id="menu" aria-label="Menu" class="fixed inset-y-0 left-0 w-[86%] max-w-[320px] bg-surface-container-lowest border-r border-outline-variant z-50 flex flex-col -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl xl:hidden">
+  <div class="h-16 px-4 border-b border-outline-variant flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2">
+      <img src="assets/img/logo.png" alt="" class="h-8 w-auto"/>
+      <span class="text-headline-sm tracking-tight uppercase font-semibold">VB.STORE</span>
+    </div>
+    <button type="button" data-action="close-menu" aria-label="Close menu" class="p-2 -mr-2 text-outline hover:text-on-surface"><span class="msym">close</span></button>
+  </div>
+  <nav class="flex-1 overflow-y-auto p-3 space-y-1" aria-label="Main">
+    <a href="#top" class="menu-link"><span class="msym">home</span>Home</a>
+    <a href="deals.html" class="menu-link !text-tertiary"><span class="msym">local_offer</span>Deals from other sites<span class="ml-auto text-label-sm uppercase border border-tertiary/40 bg-tertiary/10 rounded px-1.5 py-0.5">New</span></a>
+    <button type="button" data-action="wish-filter" class="menu-link"><span class="msym">favorite</span>Wishlist<span id="menu-wish-count" class="menu-count"></span></button>
+    <button type="button" data-action="open-cart" class="menu-link"><span class="msym">shopping_bag</span>Your bag<span id="menu-cart-count" class="menu-count"></span></button>
+    <p class="label !mb-1 px-3 pt-4">Shop by category</p>
+    <div id="menu-cats" class="space-y-1"></div>
+    <p class="label !mb-1 px-3 pt-4">Help</p>
+    <a href="#how" class="menu-link"><span class="msym">help</span>How ordering works</a>
+  </nav>
+  <div class="p-3 border-t border-outline-variant space-y-1 shrink-0">
+    <button type="button" data-theme-toggle class="menu-link"><span class="msym">light_mode</span>Light / dark theme</button>
+    <a href="admin.html" class="menu-link"><span class="msym">person</span>Admin login</a>
+  </div>
+</aside>
 
 <!-- CART DRAWER -->
 <div id="drawer-scrim" data-action="close-cart" hidden class="fixed inset-0 z-40 bg-black/60"></div>

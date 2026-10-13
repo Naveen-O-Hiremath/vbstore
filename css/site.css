@@ -53,7 +53,7 @@
 }
 
 html { scroll-behavior: smooth; }
-body { overscroll-behavior: none; }
+body { overscroll-behavior: none; overflow-x: clip; }
 [hidden] { display: none !important; }
 /* Read-only users never see editing controls. */
 body[data-role="viewer"] .admin-only { display: none !important; }
@@ -100,3 +100,15 @@ select.field {
 .err { display: block; font-size: 12px; color: rgb(var(--c-error)); margin-top: .25rem; }
 
 dialog::backdrop { background: rgb(var(--c-surface-container-lowest) / .8); backdrop-filter: blur(12px); }
+
+/* Rows in the phone side menu */
+.menu-link {
+  display: flex; align-items: center; gap: .75rem; width: 100%; padding: .7rem .75rem;
+  border-radius: .5rem; font-size: 15px; font-weight: 500; text-align: left;
+  color: rgb(var(--c-on-surface)); transition: background 150ms;
+}
+.menu-link:hover, .menu-link:focus-visible { background: rgb(var(--c-surface-container-high)); outline: none; }
+.menu-link .msym { color: rgb(var(--c-on-surface-variant)); }
+.menu-link.active { background: rgb(var(--c-primary-container)); color: rgb(var(--c-on-primary-container)); font-weight: 600; }
+.menu-link.active .msym { color: inherit; }
+.menu-count { margin-left: auto; font-size: 12px; font-weight: 600; color: rgb(var(--c-on-surface-variant)); }

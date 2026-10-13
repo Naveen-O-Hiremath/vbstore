@@ -149,6 +149,10 @@
     $("#nav-cats").innerHTML = categories.slice(0, 5).map((cat) => `
       <button type="button" data-action="cat" data-cat="${esc(cat)}" data-scroll class="text-label-md px-2 py-1 rounded-lg transition-colors ${state.cat === cat ? "bg-primary-container text-on-primary-container font-semibold" : "text-on-surface-variant hover:text-on-surface"}">${esc(cat)}</button>`).join("");
 
+    const menuRow = (value, label, icon) => `
+      <button type="button" data-action="cat" data-cat="${esc(value)}" data-scroll class="menu-link ${state.cat === value ? "active" : ""}"><span class="msym">${icon}</span>${esc(label)}</button>`;
+    $("#menu-cats").innerHTML = menuRow("all", "All products", "apps") + categories.map((cat) => menuRow(cat, cat, "label")).join("");
+
     const pill = (value, label) => `
       <button type="button" data-action="cat" data-cat="${esc(value)}" class="shrink-0 px-4 py-1.5 rounded-lg text-label-md transition-all ${state.cat === value ? "bg-primary text-on-primary font-semibold" : "bg-surface-container-low hover:bg-surface-container text-on-surface-variant hover:text-on-surface"}">${esc(label)}</button>`;
     $("#cat-pills").innerHTML =
@@ -193,6 +197,7 @@
     const badge = $("#wish-count");
     badge.hidden = !wishlist.length;
     badge.textContent = wishlist.length;
+    $("#menu-wish-count").textContent = wishlist.length || "";
   }
 
   function renderCatalogue() {
@@ -245,6 +250,7 @@
     const { fee, freeAbove } = config.shipping;
 
     $("#cart-count").textContent = count;
+    $("#menu-cart-count").textContent = count || "";
     $("#bag-count").textContent = count;
     $("#cart-pill-total").textContent = inr(subtotal);
     $("#to-checkout").disabled = !lines.length;
@@ -317,6 +323,12 @@
     if (open) showView(view);
     $("#drawer").classList.toggle("translate-x-full", !open);
     $("#drawer-scrim").hidden = !open;
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+
+  function toggleMenu(open) {
+    $("#menu").classList.toggle("-translate-x-full", !open);
+    $("#menu-scrim").hidden = !open;
     document.body.style.overflow = open ? "hidden" : "";
   }
 
@@ -461,6 +473,8 @@
       cart = cart.filter((l) => l.id !== id);
       renderCart();
     },
+    "open-menu": () => toggleMenu(true),
+    "close-menu": () => toggleMenu(false),
     "open-cart": () => toggleDrawer(true),
     "close-cart": () => toggleDrawer(false),
     checkout: () => {
@@ -473,12 +487,16 @@
 
   document.addEventListener("click", (event) => {
     const el = event.target.closest("[data-action]");
+    // Choosing anything in the side menu closes it first, so the result is visible.
+    if (event.target.closest("#menu a, #menu [data-action]:not([data-action=close-menu])")) toggleMenu(false);
     if (el) actions[el.dataset.action]?.(el.dataset, el);
     else if (event.target.id === "quick-view") event.target.close(); // click on the backdrop
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !$("#quick-view").open) toggleDrawer(false);
+    if (event.key !== "Escape" || $("#quick-view").open) return;
+    toggleDrawer(false);
+    toggleMenu(false);
   });
 
   $$(".js-search").forEach((input) => input.addEventListener("input", () => {
@@ -514,6 +532,18 @@
     renderCart();
   }
 
+  // A few deals from other sites under the store's own products. Optional:
+  // the section stays hidden when there are none or they cannot be loaded.
+  const HOME_DEALS = 8;
+  async function loadHomeDeals() {
+    const deals = await VB.fetchDeals(db).catch(() => []);
+    $("#home-deals").hidden = !deals.length;
+    $("#home-deals-grid").innerHTML = deals.slice(0, HOME_DEALS).map((d) => VB.dealCard(d, "min-w-[80%] sm:min-w-0 snap-start")).join("");
+    const more = $("#home-deals-more");
+    more.hidden = deals.length <= HOME_DEALS;
+    more.textContent = `See all ${deals.length} deals`;
+  }
+
   async function start() {
     $("#hero").innerHTML = `<div class="py-24 text-center text-on-surface-variant"><span class="msym !text-[32px] animate-spin text-primary">progress_activity</span><p class="mt-2">Loading the store…</p></div>`;
     try {
@@ -523,7 +553,9 @@
       return;
     }
     renderAll();
+    loadHomeDeals();
   }
 
+  VB.trackDealClicks(db);
   start();
 })();
